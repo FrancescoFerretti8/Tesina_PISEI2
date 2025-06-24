@@ -21,14 +21,14 @@ module tt_um_Mux (
     Decoder Decoder(
         .b(ui_in[0]),       // if this is high, then DAC data comes from ui_in[7:0]
         .a(ui_in[1]),   // load value set on data to the clock divider
-        .m0(n_interno[0]),
-        .m1(n_interno[1]),
-        .m2(n_interno[2]),
-        .m3(n_interno[3]),
-        .d0(p_interno[0]),
-        .d1(p_interno[1]),
-        .d2(p_interno[2]),
-        .d3(p_interno[3]),
+        .n0(n_interno[0]),
+        .n1(n_interno[1]),
+        .n2(n_interno[2]),
+        .n3(n_interno[3]),
+        .p0(p_interno[0]),
+        .p1(p_interno[1]),
+        .p2(p_interno[2]),
+        .p3(p_interno[3]),
         .VPWR(VDPWR),
         .VGND(VGND)
         );

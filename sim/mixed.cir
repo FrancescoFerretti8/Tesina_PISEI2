@@ -1,0 +1,66 @@
+Simulation of a DECODER with Verilator and d_cosim
+
+.lib /home/ttuser/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+*https://sourceforge.net/p/ngspice/ngspice/ci/master/tree/examples/xspice/verilator/
+
+* The digital portion of the circuit is specified in compiled Verilog.
+* list the inputs and outputs
+adut [a b] [n3 n2 n1 n0 p3 p2 p1 p0] null dut
+.model dut d_cosim simulation="./Decoder.so"
+
+* connect the driver to the R2R dac
+* had to edit spice exported by xschem to add the subckt and ends
+
+.include "/home/ttuser/Progetto_PISEI/xschem/simulation/Mux.spice" 
+*.include "../mag/r2r.spice" 
+
+*xMux out_decoder2 out_decoder1 out_decoder0 n_out_decoder2 n_out_decoder1 n_out_decoder0 out 0 0 Mux  
+*Mux VDD VSS p0 A0 n0 p1 A1 n1 out p2 n2 p3 n3
+xMux VDD VSS p0 A0 n0 p1 A1 n1 out p2 n2 p3 n3 Mux
+
+
+* simulate tt output path
+R1 out pin_out 500
+C1 out 0 5p
+.ic V(out)=0.5
+
+
+**** End of the ADC and its subcircuits.  Begin test circuit ****
+
+*.param vcc=1.8
+*vcc vcc 0 {vcc}
+
+* Digital clock signal
+
+*aclock 0 clk clock
+*.model clock d_osc cntl_array=[-1 1] freq_array=[1Meg 1Meg]
+
+* reset signal
+
+*DIGITALE
+*Generiamo tutti i codici 00->01->10->11
+Vb b 0 PULSE(1.8 0 0 1n 1n 10u 20u)
+Va a 0 PULSE(1.8 0 0 1n 1n 20u 40u)
+
+*ANALOGICO
+VDD VDD 0 DC 1.8
+VSS VSS 0 DC 0 
+
+*Va a 0 DC 1.8
+*Vb b 0 DC 1.8
+
+VA0 A0 0 SIN(0.7 0.3 100K) 
+VA1 A1 0 SIN(0.7 0.7 100K) 
+*VA0 A0 0 DC 1.4
+*VA1 A1 0 DC 0.7
+
+.control
+tran 100n 40u
+*tran 1n 1u
+*plot  a+8 b+8 n3+6 n2+4 n1+2 n0 
+*plot  a+8 b+8 p3+6 p+4 p1+2 p0
+ 
+plot pin_out
+.endc
+.end

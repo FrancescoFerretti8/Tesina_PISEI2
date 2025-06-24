@@ -1,0 +1,22 @@
+** sch_path: /home/ttuser/tt10-analog-template/xschem/Mux.sch
+.subckt Mux VDD VSS p0 A0 n0 p1 A1 n1 out p2 n2 p3 n3
+*.PININFO A0:I out:O p0:I A1:I p1:I n0:I p2:I n2:I n1:I p3:I n3:I VDD:I VSS:I
+x1 VDD VSS p0 A0 out n0 pass_gate
+x2 VDD VSS p1 A1 out n1 pass_gate
+x3 VDD VSS p2 net1 out n2 pass_gate
+x4 VDD VSS p3 net2 out n3 pass_gate
+XR3 net1 VDD VSS sky130_fd_pr__res_high_po_0p35 L=21 mult=1 m=1
+XR1 net2 net1 VSS sky130_fd_pr__res_high_po_0p35 L=21 mult=1 m=1
+XR2 VSS net2 VSS sky130_fd_pr__res_high_po_0p35 L=21 mult=1 m=1
+.ends
+
+* expanding   symbol:  pass_gate.sym # of pins=6
+** sym_path: /home/ttuser/tt10-analog-template/xschem/pass_gate.sym
+** sch_path: /home/ttuser/tt10-analog-template/xschem/pass_gate.sch
+.subckt pass_gate VDD VSS pin Ain uscita nin
+*.PININFO Ain:I pin:I nin:I VDD:I VSS:I uscita:O
+XM2 Ain nin uscita VSS sky130_fd_pr__nfet_01v8_lvt L=0.15 W=8 nf=8 m=1
+XM3 uscita pin Ain VDD sky130_fd_pr__pfet_01v8_lvt L=0.35 W=16 nf=16 m=1
+.ends
+
+.end
